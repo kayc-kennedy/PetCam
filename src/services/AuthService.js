@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UsersRepository = require('../repositories/UsersRepository');
-const res = require('express/lib/response');
 require('dotenv').config()
 
 module.exports = {
@@ -18,7 +17,7 @@ module.exports = {
             return {  id: response.id_cliente || response.id_petshop, 
                       nome: response.nome, 
                       tipo_usuario: response.tipo_usuario,
-                      "token": createJWT(response.id), 
+                      "token": createJWT(response.id_cliente || response.id_petshop), 
                       "status_code": 200,
                       "message": "Login efetuado com sucesso" }
 
@@ -34,7 +33,7 @@ module.exports = {
             const response = await UsersRepository.registerUser({ senha: bcrypt.hashSync(password, 10), nome_usuario, tipo_usuario}, {nome, status, email});
 
             if(response.errno == 1062) return { "message": "Usuário existente no sistema", "status_code": 422 }
-            return { "message": "Usuário criado com sucesso", "token": createJWT(response[0]), "status_code": 201 }
+            return { "message": "Usuário criado com sucesso", "token": createJWT(response.id_usuario), "status_code": 201 }
 
         } catch (error) {
             return { "message": "Erro ao realizar cadastro", "status_code": 422 }
@@ -42,6 +41,6 @@ module.exports = {
     }
 }
 
-function createJWT(id) {
-    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '30m' })
+function createJWT(id_usuario) {
+    return jwt.sign({ id_usuario }, process.env.SECRET, { expiresIn: '30m' })
 }
