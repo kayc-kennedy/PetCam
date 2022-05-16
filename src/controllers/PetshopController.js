@@ -1,7 +1,18 @@
 const PetshopService = require('../services/PetshopService')
 require('dotenv').config()
 
-exports.insert = async (req, res) => {
-    const response = await PetshopService.registerPet(req.body)
-        return res.status(response.status_code).json(response);
+exports.insertPets = async (req, res) => {
+    const service = await PetshopService.registerPet(req.body)
+        return res.status(service.status_code).json(service);
 }
+
+exports.getClients = async (req, res) => {
+    const service = await PetshopService.getClients()
+        return res.status(service.status_code).json(service.response);
+}
+
+exports.getPets = async (req, res) => {
+    const service = await PetshopService.getPets(req.params.idcliente)
+        return res.status(service.status_code).json(service.response);
+}
+

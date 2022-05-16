@@ -48,7 +48,6 @@ module.exports = {
     },
 
     validatePermission: async (id) => {
-        console.log(id)
         if(id){
             const response = await db('petshop')
             .select('petshop.id_petshop')

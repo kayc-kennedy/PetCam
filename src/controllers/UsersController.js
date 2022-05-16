@@ -2,12 +2,12 @@ const AuthService = require('../services/AuthService')
 require('dotenv').config()
 
 exports.insert = async (req, res) => {
-    const response = await AuthService.registerUser(req.body)
+    const service = await AuthService.registerUser(req.body)
 
-        return res.status(response.status_code).json(response);
+        return res.status(service.status_code).json(service);
 }
 
 exports.login = async (req, res) => {
-    const response = await AuthService.loginUser(req.body)
-        return res.status(response.status_code).json(response);
+    const service = await AuthService.loginUser(req.body)
+        return res.status(service.status_code).json(service);
 }
