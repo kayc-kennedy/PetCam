@@ -23,20 +23,7 @@ module.exports = {
             return error;
         }
     },
-    getPermission: async (idLogado) =>{
-        try {         
-            const response = await db('usuario')
-                .join('cliente', 'usuario.id_usuario', '=', "cliente.id_usuario")
-                .select('cliente.id_cliente', 'cliente.nome', 'cliente.status', 'usuario.senha', 'usuario.tipo_usuario')
-                .where({'usuario.nome_usuario': data.nome_usuario, 'usuario.tipo_usuario': data.tipo_usuario, 'cliente.status': 'A'})
-                // console.log(response[0])
-            return response[0]
-            
-        } catch (error) {
-            return error;
-        }
-    },
-    
+      
     registerUser: async (user, data) => {
         try {
             const response = await db('usuario').insert(user)
@@ -56,8 +43,19 @@ module.exports = {
             }
 
         } catch (error) { 
-            console.log(error)
             return error;
         }
+    },
+
+    validatePermission: async (id) => {
+        console.log(id)
+        if(id){
+            const response = await db('petshop')
+            .select('petshop.id_petshop')
+            .where({'id_petshop': id, 'status': 'A'})
+            
+            return (response[0].id_petshop ? true:false)
+        }
+        return false;
     }
 }

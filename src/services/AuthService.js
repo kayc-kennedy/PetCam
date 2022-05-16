@@ -38,9 +38,20 @@ module.exports = {
         } catch (error) {
             return { "message": "Erro ao realizar cadastro", "status_code": 422 }
         }
+    },
+
+    validatePermission: async (id) =>{
+        try{
+            const response = await UsersRepository.validatePermission(id);
+            return response;
+            
+        }catch(error){
+            return error;
+        }
     }
+
 }
 
 function createJWT(id_usuario) {
-    return jwt.sign({ id_usuario }, process.env.SECRET, { expiresIn: '30m' })
+    return jwt.sign({ id_usuario }, process.env.SECRET, { expiresIn: '60m' })
 }
