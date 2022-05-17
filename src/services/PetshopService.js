@@ -9,7 +9,8 @@ module.exports = {
         try {
             const response = await PetshopRepository.registerPet({id_cliente, nome, raca, cor, data_nascimento, sexo, status});
 
-            return { "message": "Pet cadastrado com sucesso", "status_code": 201 }
+            if(response[0]) return { "message": "Pet cadastrado com sucesso", "status_code": 201 }         
+            return { "message":"Erro ao cadastrar pet", "status_code": 404 }
 
         } catch (error) {
             console.log(error)

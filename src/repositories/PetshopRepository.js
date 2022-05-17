@@ -4,7 +4,6 @@ module.exports = {
     registerPet: async (data) => {
         try {
             const response = await db('animal').insert(data)
-                      
             return response
 
         } catch (error) { 

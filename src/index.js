@@ -4,6 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000
 const users = require('./routes/users')
 const petshop = require('./routes/petshop')
+const camera = require('./routes/camera')
 
 app.use(express.json());
 
@@ -14,6 +15,7 @@ app.get('/', (req, res) => {
 });
 app.use('/users', users);
 app.use('/petshop', petshop);
+app.use('/camera', camera)
 
 
 app.listen(PORT);
