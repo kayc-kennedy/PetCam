@@ -19,15 +19,20 @@ module.exports = {
     insertGrantAcess: async (data) => {
         try {
             const {id_animal, id_petshop, status='A'} = data
-            const response = await CameraRepository.insertGrantAcess({id_petshop, id_animal, status});
+            const alreadyAcess = await CameraRepository.alreadyAcess(id_animal);
+
+            if(alreadyAcess[0]) return { "message":"O pet informado já possui um atendimento ativo, ou seja o dono já possue acesso as cameras", "status_code": 201 }    
+
+
+            const response = await CameraRepository.insertGrantAcess({id_petshop, id_animal, status});            
             
-            
-            if(response[0]) {
+            if(response[0]){
                 const id_acesso_camera = response[0]
                 const response_recording = await CameraRepository.insertRecording(id_animal, id_petshop, id_acesso_camera);
                 return { "message":"Acesso liberado com sucesso. Quantidade de cameras disponiveis: " + response_recording, "status_code": 201 }         
-            } 
-
+                 
+            }
+            
             return { "menssage":"Erro ao liberar acesso. Pet ou cliente não cadastrados no sistema", "status_code": 404 }
             
         } catch (error) {
@@ -66,8 +71,9 @@ module.exports = {
         }
     },
 
-    getCamerasAvailable: async (id_cliente) => {
+    getCamerasAvailable: async (data) => {
         try {
+            const { id_cliente } = data
             const response = await CameraRepository.getCamerasAvailable(id_cliente);
 
             if(response[0]) return { response, "status_code": 200 }          

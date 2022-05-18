@@ -16,11 +16,23 @@ module.exports = {
             return error;
         }
     },
+    alreadyAcess: async (id_animal) => {
+        try {
+            const alreadyAcess =  await db('acesso_camera')
+            .select('acesso_camera.id_acesso_camera')
+            .where({'acesso_camera.status':"A", "acesso_camera.id_animal":id_animal})
+    
+            return alreadyAcess;
+
+        } catch (error) { 
+            return error;
+        }
+    },
     insertGrantAcess: async (data) => {
         try {
-            const response = await db('acesso_camera').insert(data)
 
-            return response;
+            const response = await db('acesso_camera').insert(data)
+            return response
 
         } catch (error) { 
             return error;
@@ -70,7 +82,6 @@ module.exports = {
     },
     changeStatusCamera: async (id_camera, id_petshop, status) => {
         try {
-            console.log(id_camera, id_petshop, status);
             const response = await 
                 db('camera')
                     .where({'id_camera':id_camera, 'id_petshop':id_petshop})
@@ -85,14 +96,9 @@ module.exports = {
     },
     getCamerasAvailable: async (id_cliente) => {
         try {
-            const response = await 
-            db('acesso_camera')
-                .join({'petshop', "petshop.id_petshop":'acesso_camera.id_petshop','petshop.id_petshop':'camera.id_petshop'})
-                .join('animal', "animal.id_animal", '=', 'acesso_camera.id_animal')
-                .select('animal.id_cliente', 'camera.id_camera')
-                .where({ 'animal.id_cliente':id_cliente, 'acesso_camera.status':'A'});
-
-            return response;
+            const listCamera = await db.raw(`select c.id_camera, c.ddns, c.porta, c.usuario, c.senha, c.link_rtspme, c.setor from petcam.acesso_camera ac 	inner join petcam.petshop pt on ac.id_petshop = pt.id_petshop     inner join petcam.camera c on pt.id_petshop  = c.id_petshop     inner join petcam.animal a on a.id_animal = ac.id_animal     where a.id_cliente =   ${id_cliente}      and c.status = ac.status    		and ac.status = 'a' group by c.id_camera, c.ddns, c.porta, c.usuario, c.senha, c.link_rtspme, c.setor`);
+            
+            return listCamera[0];
 
         } catch (error) { 
             console.log(error)

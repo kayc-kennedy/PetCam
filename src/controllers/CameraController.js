@@ -23,7 +23,7 @@ exports.changeStatusCamera = async (req, res) => {
 
 exports.getCamerasAvailable = async (req, res) => {
     const service = await CameraService.getCamerasAvailable(req.params);
-        return res.status(service.status_code).json(service);
+        return res.status(service.status_code).json(service.response);
 }
 
 
