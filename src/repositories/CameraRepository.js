@@ -53,11 +53,11 @@ module.exports = {
             return error;
         }
     },
-    blockAcessClient: async (id_petshop, id_animal, status) => {
+    blockAcessClient: async (id_petshop, id_animal, status) => { // REVISAR 
         try {
             const response = await 
                 db('acesso_camera')
-                    .where('id_animal', '=', id_animal, 'id_petshop', '=', id_petshop)
+                    .where({'id_animal':id_animal, 'id_petshop':id_petshop})
                     .update({status: status});
             
             return response;
@@ -66,6 +66,22 @@ module.exports = {
             console.log(error)
             return error;
         }
-    }
+    },
+    changeStatusCamera: async (id_camera, id_petshop, status) => {
+        try {
+            console.log(id_camera, id_petshop, status);
+            const response = await 
+                db('camera')
+                    .where({'id_camera':id_camera, 'id_petshop':id_petshop})
+                    .update({status: status});
+
+            return response;
+
+        } catch (error) { 
+            console.log(error)
+            return error;
+        }
+    },
+    
     
 }

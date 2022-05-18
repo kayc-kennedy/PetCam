@@ -15,3 +15,10 @@ exports.blockAcessClient = async (req, res) => {
     const service = await CameraService.blockAcessClient(req.params);
         return res.status(service.status_code).json(service);
 }
+
+exports.changeStatusCamera = async (req, res) => {
+    const service = await CameraService.changeStatusCamera(req.body);
+        return res.status(service.status_code).json(service);
+}
+
+

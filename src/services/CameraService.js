@@ -49,7 +49,21 @@ module.exports = {
             console.log(error)
             return { "message": "Erro ao cancelar acesso", "status_code": 422 }
         }
+    },
+
+    changeStatusCamera: async (data) => {
+        try {
+            const {id_camera, id_petshop, status} = data
+            const response = await CameraRepository.changeStatusCamera(id_camera, id_petshop, status);
+                       
+            if(response) return { "message":"Câmera alterada com sucesso", "status_code": 200 };         
+        
+            return { "menssage":"Camerâ não encontrada", "status_code": 404 };
+            
+        } catch (error) {
+            console.log(error)
+            return { "message": "Erro ao alterar câmera", "status_code": 422 }
+        }
     }
 
-    
 }
