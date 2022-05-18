@@ -64,6 +64,20 @@ module.exports = {
             console.log(error)
             return { "message": "Erro ao alterar câmera", "status_code": 422 }
         }
-    }
+    },
+
+    getCamerasAvailable: async (id_cliente) => {
+        try {
+            const response = await CameraRepository.getCamerasAvailable(id_cliente);
+
+            if(response[0]) return { response, "status_code": 200 }          
+            return { response, "status_code": 404 }
+            
+        } catch (error) {
+            console.log(error)
+            return { "message": "Erro ao buscar as cameras", "status_code": 422 }
+        }
+    },
+    
 
 }

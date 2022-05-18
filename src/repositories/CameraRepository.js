@@ -2,13 +2,13 @@ const { response } = require('express');
 const db = require('../db')
 
 module.exports = {
-    getAllCameras: async (idPetshop) => {
+    getAllCameras: async (id_petshop) => {
         try {
             const response = await 
             db('camera')
                 .join('petshop', "petshop.id_petshop", '=', 'camera.id_petshop')
                 .select('camera.id_camera', 'camera.setor', 'camera.status')
-                .where({'petshop.id_petshop':idPetshop});
+                .where({'petshop.id_petshop':id_petshop});
 
             return response;
 
@@ -28,10 +28,11 @@ module.exports = {
     },
     insertRecording: async (id_animal, id_petshop, id_acesso_camera) => {
         try {
-            const responseCameraList = await db('camera')
-            .select('camera.id_camera')
-            .where({'camera.status':"A", "camera.id_petshop":id_petshop})
-            
+            const responseCameraList = 
+            await db('camera')
+                .select('camera.id_camera')
+                .where({'camera.status':"A", "camera.id_petshop":id_petshop})
+                
             let jsonRecording = []
             for (let i = 0; i < responseCameraList.length; i++) {
                 let id_camera = responseCameraList[i].id_camera;
@@ -82,6 +83,21 @@ module.exports = {
             return error;
         }
     },
-    
+    getCamerasAvailable: async (id_cliente) => {
+        try {
+            const response = await 
+            db('acesso_camera')
+                .join({'petshop', "petshop.id_petshop":'acesso_camera.id_petshop','petshop.id_petshop':'camera.id_petshop'})
+                .join('animal', "animal.id_animal", '=', 'acesso_camera.id_animal')
+                .select('animal.id_cliente', 'camera.id_camera')
+                .where({ 'animal.id_cliente':id_cliente, 'acesso_camera.status':'A'});
+
+            return response;
+
+        } catch (error) { 
+            console.log(error)
+            return error;
+        }
+    },
     
 }
