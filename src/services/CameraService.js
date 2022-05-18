@@ -25,7 +25,7 @@ module.exports = {
             if(response[0]) {
                 const id_acesso_camera = response[0]
                 const response_recording = await CameraRepository.insertRecording(id_animal, id_petshop, id_acesso_camera);
-                return { "message":"Acesso liberado com sucesso", "status_code": 201 }         
+                return { "message":"Acesso liberado com sucesso. Quantidade de cameras disponiveis: " + response_recording, "status_code": 201 }         
             } 
 
             return { "menssage":"Erro ao liberar acesso. Pet ou cliente não cadastrados no sistema", "status_code": 404 }
@@ -34,6 +34,22 @@ module.exports = {
             console.log(error)
             return { "message": "Erro ao inserir acessos", "status_code": 422 }
         }
+    },
+
+    blockAcessClient: async (data) => {
+        try {
+            const {id_animal, id_petshop, status='I'} = data
+            const response = await CameraRepository.blockAcessClient(id_petshop, id_animal, status);
+                       
+            if(response) return { "message":"Acesso removido com sucesso", "status_code": 200 };         
+        
+            return { "menssage":"Erro ao cancelar acesso. Petshop ou Animal incorretos", "status_code": 404 };
+            
+        } catch (error) {
+            console.log(error)
+            return { "message": "Erro ao cancelar acesso", "status_code": 422 }
+        }
     }
+
     
 }
