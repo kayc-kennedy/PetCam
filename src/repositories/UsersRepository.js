@@ -1,21 +1,21 @@
 const db = require('../db')
 
 module.exports = {
-    getUserByNameUser: async (data) => {
+    getUserByNameUser: async (nome_usuario, tipo_usuario) => {
         try {
-            if(data.tipo_usuario == 'C'){    
-
+            if(tipo_usuario == 'C'){    
                 const response = await db('usuario')
                     .join('cliente', 'usuario.id_usuario', '=', "cliente.id_usuario")
                     .select('cliente.id_cliente', 'cliente.nome', 'cliente.status', 'usuario.senha', 'usuario.tipo_usuario')
-                    .where({'usuario.nome_usuario': data.nome_usuario, 'usuario.tipo_usuario': data.tipo_usuario, 'cliente.status': 'A'})
-                    // console.log(response[0])
+                    .where({'usuario.nome_usuario': nome_usuario, 'usuario.tipo_usuario': tipo_usuario, 'cliente.status': 'A'})
+                    
+                    console.log(response)
                 return response[0]
             }
             const response = await db('usuario')
                 .join('petshop', 'usuario.id_usuario', '=', "petshop.id_usuario")
                 .select('petshop.id_petshop', 'petshop.nome', 'petshop.status', 'usuario.senha', 'usuario.tipo_usuario')
-                .where({'usuario.nome_usuario': data.nome_usuario, 'usuario.tipo_usuario': data.tipo_usuario, 'petshop.status': 'A'})
+                .where({'usuario.nome_usuario': nome_usuario, 'usuario.tipo_usuario': tipo_usuario, 'petshop.status': 'A'})
 
             return response[0]
             
@@ -27,7 +27,7 @@ module.exports = {
     registerUser: async (user, data) => {
         try {
             const response = await db('usuario').insert(user)
-                      
+
             if(response[0] > 0 ){ // Verifico se o usuário foi criado
                 const id_usuario = response[0];
                 const dados_cadastrais = {id_usuario:id_usuario, nome:data.nome, email:data.email, status:data.status}

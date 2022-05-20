@@ -8,7 +8,12 @@ module.exports = {
         const { nome_usuario, password, tipo_usuario } = data
         try {
 
-            const response = await UsersRepository.getUserByNameUser({ nome_usuario, tipo_usuario });
+            const response = await UsersRepository.getUserByNameUser( nome_usuario, tipo_usuario );
+            
+            if(!response){
+                return { "message": "Usuário inexistente", "status_code": 404 }
+            }
+            
             const passwordCheck = bcrypt.compareSync(password.toString(), response.senha)
             
             if (!passwordCheck) {
@@ -22,6 +27,7 @@ module.exports = {
                       "message": "Login efetuado com sucesso" }
 
         } catch (error) {
+            console.log(error)
             return { "message": "Erro no banco de dados", "status_code": 422 }
         }
     },
@@ -31,7 +37,7 @@ module.exports = {
 
         try {
             const response = await UsersRepository.registerUser({ senha: bcrypt.hashSync(password, 10), nome_usuario, tipo_usuario}, {nome, status, email});
-
+            console.log(response)
             if(response.errno == 1062) return { "message": "Usuário existente no sistema", "status_code": 422 }
             return { "message": "Usuário criado com sucesso", "token": createJWT(response.id_usuario), "status_code": 201 }
 

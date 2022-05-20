@@ -23,14 +23,19 @@ module.exports = {
 
             if(alreadyAcess[0]) return { "message":"O pet informado já possui um atendimento ativo, ou seja o dono já possue acesso as cameras", "status_code": 201 }    
 
-
             const response = await CameraRepository.insertGrantAcess({id_petshop, id_animal, status});            
             
             if(response[0]){
                 const id_acesso_camera = response[0]
-                const response_recording = await CameraRepository.insertRecording(id_animal, id_petshop, id_acesso_camera);
-                return { "message":"Acesso liberado com sucesso. Quantidade de cameras disponiveis: " + response_recording, "status_code": 201 }         
+                const recording = await CameraRepository.insertRecording(id_animal, id_petshop, id_acesso_camera);
+                
+                if(recording){
+                    return { "message":"Acesso liberado com sucesso. Gravações iniciadas.",
+                             "cameras_gravando": `${recording.responseRecording}`,
+                             "cameras_ao_vivo":  `${recording.lengthJsonRecording}`,
+                             "status_code": 201 }         
                  
+                } 
             }
             
             return { "menssage":"Erro ao liberar acesso. Pet ou cliente não cadastrados no sistema", "status_code": 404 }
@@ -46,9 +51,16 @@ module.exports = {
             const {id_animal, id_petshop, status='I'} = data
             const response = await CameraRepository.blockAcessClient(id_petshop, id_animal, status);
                        
-            if(response) return { "message":"Acesso removido com sucesso", "status_code": 200 };         
+            if(response){
+                let acesso_removido = response.response_acesso_camera > 0 ? true:false
+                let gravacoes_interrompidas = response.response_gravacao > 0 && response.kill_process ? true:false;
+                return { "message":"Acesso removido com sucesso", 
+                         "acesso_removido": acesso_removido,
+                         "gravacoes_interrompidas": gravacoes_interrompidas,
+                        "status_code": 200 }}
+                ;         
         
-            return { "menssage":"Erro ao cancelar acesso. Petshop ou Animal incorretos", "status_code": 404 };
+            return { "menssage":"Erro ao cancelar acesso.", "status_code": 404 };
             
         } catch (error) {
             console.log(error)

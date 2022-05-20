@@ -6,6 +6,9 @@ const users = require('./routes/users')
 const petshop = require('./routes/petshop')
 const camera = require('./routes/camera')
 
+const geraToken = require('../src/utils/geraToken')
+
+
 app.use(express.json());
 
 
@@ -13,6 +16,9 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.json('Backend is running');
 });
+app.use('/geraToken', geraToken);
+
+
 app.use('/users', users);
 app.use('/petshop', petshop);
 app.use('/camera', camera)

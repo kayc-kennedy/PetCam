@@ -1,7 +1,9 @@
-const { response } = require('express');
-const db = require('../db')
+const db = require('../db');
+const data  = require('../utils/data');
+const recording = require('../rtsp/recording');
+const { json } = require('express/lib/response');
 
-module.exports = {
+module.exports = {  
     getAllCameras: async (id_petshop) => {
         try {
             const response = await 
@@ -42,24 +44,45 @@ module.exports = {
         try {
             const responseCameraList = 
             await db('camera')
-                .select('camera.id_camera')
+                .select('camera.id_camera', 'camera.link_rtspme')
                 .where({'camera.status':"A", "camera.id_petshop":id_petshop})
                 
             let jsonRecording = []
             for (let i = 0; i < responseCameraList.length; i++) {
-                let id_camera = responseCameraList[i].id_camera;
-                
+                let id_camera = responseCameraList[i].id_camera
+                let url = responseCameraList[i].link_rtspme
+
                 jsonRecording.push({id_animal: id_animal,
                                     id_acesso_camera: id_acesso_camera,
-                                    id_camera: id_camera})
+                                    id_camera: id_camera,
+                                    url: url})
             
             }
-            const response = await db('gravacao').insert(jsonRecording)
-            
-            if(response){
-                return jsonRecording.length
+
+            let lengthJsonRecording = jsonRecording.length;
+            const repository  = './videos/'
+
+            for (let i = 0; i < lengthJsonRecording; i++){
+                const dataHora = data.dataHora();
+                const nome_arquivo = `${repository}${jsonRecording[i].id_camera}_${id_animal}_${id_petshop}_${dataHora}.mp4`;
+
+                let pid = recording.recordStream(nome_arquivo, jsonRecording[i].url ) 
+                jsonRecording[i].id_processo = pid
+                jsonRecording[i].nome_arquivo = `${jsonRecording[i].id_camera}_${id_animal}_${id_petshop}_${dataHora}.mp4`;
             }
-            return 0;
+
+            let responseRecording = false;
+            if(jsonRecording[0].id_processo){ // Verifico se as gravações foram iniciadas, se sim, insito no banco o registro
+                
+                for(let i = 0; i < jsonRecording.length; i++){ // Removo o campo URL
+                    delete jsonRecording[i].url;
+                }
+                responseRecording = await db('gravacao').insert(jsonRecording);
+                responseRecording = true
+            }
+        
+            // Quantidade de cameras disponiveis / Gravações iniciadas
+            return {lengthJsonRecording, responseRecording};
 
         } catch (error) { 
             console.log(error)
@@ -68,12 +91,39 @@ module.exports = {
     },
     blockAcessClient: async (id_petshop, id_animal, status) => { // REVISAR 
         try {
-            const response = await 
-                db('acesso_camera')
-                    .where({'id_animal':id_animal, 'id_petshop':id_petshop})
-                    .update({status: status});
+
+            const dataRecordign = await 
+                db('gravacao')
+                    .join('acesso_camera', 'gravacao.id_acesso_camera', '=', 'acesso_camera.id_acesso_camera')
+                    .select('gravacao.id_gravacao', 'gravacao.id_processo', 'acesso_camera.id_acesso_camera')
+                    .where({'acesso_camera.id_petshop':id_petshop, 'acesso_camera.id_animal':id_animal, 'acesso_camera.status':'A'})
+
             
-            return response;
+            // O acesso camera será unico sempre, então pode-se usar a primeira posicao achada
+            let id_acesso_camera = dataRecordign[0].id_acesso_camera
+
+            if(dataRecordign[0]){
+                // Mudo o status do Acesso as cameras ao vivo
+                const response_acesso_camera = await 
+                db('acesso_camera')
+                    .where({'acesso_camera.id_acesso_camera':id_acesso_camera })
+                    .update({status: status});
+
+                // Encerro as gravações de todas as cameras
+                let kill_process;
+                for(let i = 0; i < dataRecordign.length; i++){
+                    kill_process = process.kill(dataRecordign[i].id_processo);
+                }
+
+                // Encerro as gravações no banco
+                const response_gravacao = await 
+                db('gravacao')
+                    .where({'gravacao.id_acesso_camera':id_acesso_camera})
+                    .update({data_hora_fim: new Date() });
+
+                return {response_acesso_camera, response_gravacao, kill_process}
+            }
+            return false
 
         } catch (error) { 
             console.log(error)
