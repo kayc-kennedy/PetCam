@@ -9,7 +9,6 @@ module.exports = {
                     .select('cliente.id_cliente', 'cliente.nome', 'cliente.status', 'usuario.senha', 'usuario.tipo_usuario')
                     .where({'usuario.nome_usuario': nome_usuario, 'usuario.tipo_usuario': tipo_usuario, 'cliente.status': 'A'})
                     
-                    console.log(response)
                 return response[0]
             }
             const response = await db('usuario')
@@ -23,6 +22,58 @@ module.exports = {
             return error;
         }
     },
+    updateProfile: async (id_cliente, user, client) => {
+        try {
+            var responseUser;
+            var responseClient;
+            var dataClient;
+            
+            let nome = client.nome;
+            let email = client.email
+
+            // Busca informação do cliente
+            dataClient = await 
+                db('cliente')
+                    .select('cliente.nome', 'cliente.email')
+                    .where({'cliente.id_cliente':id_cliente});
+            
+            
+            // Persiste as informações do cliente, para que não seja possivel atualizar para null no banco
+            if(!nome || !email){
+                nome = dataClient[0].nome
+                email = dataClient[0].email
+
+            }
+            // Se existir senha, atualizo
+            if(user.senha){
+                responseUser = await 
+                db('usuario')
+                    .join('cliente', 'cliente.id_usuario', '=', 'usuario.id_usuario')
+                    .where({'cliente.id_cliente':id_cliente})
+                    .update({'senha': user.senha})
+
+                if(responseUser){
+                    responseClient = await 
+                    db('cliente')
+                        .where({'cliente.id_cliente':id_cliente})
+                        .update({'nome':nome, 'email':email})
+                }
+
+                if(responseUser && responseClient) return true
+            }
+            // se a senha tiver vazia, atualizo somente os campos nome e email
+            responseClient = await 
+            db('cliente')
+                .where({'cliente.id_cliente':id_cliente})
+                .update({'nome':nome, 'email':email})
+            if(responseClient) return true
+
+            return false;
+
+        } catch (error) { 
+            return error;
+        }
+    },   
       
     registerUser: async (user, data) => {
         try {

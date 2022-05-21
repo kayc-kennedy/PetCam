@@ -54,8 +54,30 @@ module.exports = {
         }catch(error){
             return error;
         }
-    }
+    },
+    updateProfile: async (data) => {
+        const { id_cliente,  password, nome, email  } = data
 
+        var passwordEncrypted; 
+        var response;
+        try {
+            if(password) {
+                passwordEncrypted = bcrypt.hashSync(password, 10)
+                response = await UsersRepository.updateProfile(id_cliente, {senha: passwordEncrypted}, {nome, email});
+ 
+                if(response) return { "message": "Usuário alterado com sucesso",  "status_code": 200 }
+            }
+
+            response = await UsersRepository.updateProfile(id_cliente, {senha: ""}, {nome, email});
+            if(response) return { "message": "Usuário alterado com sucesso",  "status_code": 200 }
+
+            return { "message": "Usuário não encontrado",  "status_code": 404 }
+
+        } catch (error) {
+            return { "message": "Erro ao realizar cadastro", "status_code": 422 }
+        }
+    }
+    
 }
 
 function createJWT(id_usuario) {

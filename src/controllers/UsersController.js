@@ -11,3 +11,9 @@ exports.login = async (req, res) => {
     const service = await AuthService.loginUser(req.body)
         return res.status(service.status_code).json(service);
 }
+
+exports.updateProfile = async (req, res) => {
+    const service = await AuthService.updateProfile(req.body)
+        return res.status(service.status_code).json(service);
+}
+
