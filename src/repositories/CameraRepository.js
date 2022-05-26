@@ -1,7 +1,10 @@
 const db = require('../db');
 const data  = require('../utils/data');
 const recording = require('../rtsp/recording');
-const { json } = require('express/lib/response');
+const aws = require('../infra/aws') 
+const convert = require('../infra/promiseConvert') 
+const fs = require('fs');
+
 
 module.exports = {  
     getAllCameras: async (id_petshop) => {
@@ -64,11 +67,11 @@ module.exports = {
 
             for (let i = 0; i < lengthJsonRecording; i++){
                 const dataHora = data.dataHora();
-                const nome_arquivo = `${repository}${jsonRecording[i].id_camera}_${id_animal}_${id_petshop}_${dataHora}.mp4`;
+                const nome_arquivo = `${repository}${jsonRecording[i].id_camera}_${id_animal}_${id_petshop}.mp4`;
 
                 let pid = recording.recordStream(nome_arquivo, jsonRecording[i].url ) 
                 jsonRecording[i].id_processo = pid
-                jsonRecording[i].nome_arquivo = `${jsonRecording[i].id_camera}_${id_animal}_${id_petshop}_${dataHora}.mp4`;
+                jsonRecording[i].nome_arquivo = `${jsonRecording[i].id_camera}_${id_animal}_${id_petshop}.mp4`;
             }
 
             let responseRecording = false;
@@ -95,10 +98,9 @@ module.exports = {
             const dataRecordign = await 
                 db('gravacao')
                     .join('acesso_camera', 'gravacao.id_acesso_camera', '=', 'acesso_camera.id_acesso_camera')
-                    .select('gravacao.id_gravacao', 'gravacao.id_processo', 'acesso_camera.id_acesso_camera')
+                    .select('gravacao.id_gravacao', 'gravacao.id_processo', 'acesso_camera.id_acesso_camera', 'gravacao.nome_arquivo')
                     .where({'acesso_camera.id_petshop':id_petshop, 'acesso_camera.id_animal':id_animal, 'acesso_camera.status':'A'})
 
-            
             // O acesso camera será unico sempre, então pode-se usar a primeira posicao achada
             let id_acesso_camera = dataRecordign[0].id_acesso_camera
 
@@ -120,6 +122,30 @@ module.exports = {
                 db('gravacao')
                     .where({'gravacao.id_acesso_camera':id_acesso_camera})
                     .update({data_hora_fim: new Date() });
+                
+                // Subo os videos para AWS
+                for(let i = 0; i < dataRecordign.length; i++){
+                    const filename = './videos/' + dataRecordign[i].nome_arquivo 
+                    // Converto os videos gravados para mp4 
+                    const fileConvert = convert.convertVideo(filename)
+
+                    fileConvert
+                        .then((data)=>{
+                            // Envio para a AWS
+                            aws.uploadAWS(dataRecordign[i].nome_arquivo)
+                                .then(()=>{
+                                    console.log(`Arquivo ${filename} enviado para a AWS`)
+                                    // Apago os videos após o envio 
+                                    fs.unlink(filename, (err)=>{
+                                        if (err) console.log(err);
+                                        console.log(`Arquivo ${filename} deletado`);
+                                    })  
+                                })
+                        })
+                        .catch((err)=>{
+                            console.log(err)
+                        })     
+                }
 
                 return {response_acesso_camera, response_gravacao, kill_process}
             }

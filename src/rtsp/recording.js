@@ -3,12 +3,14 @@ var
     child_process = require('child_process'),
     readStream
 
+var pathToFfmpeg = require('ffmpeg-static');
+
+
 // var url = "rtsp://admin:CYZS2V92@cameratcc.ddns.net:554/cam/realmonitor?channel=1&subtype=0";
 
 function recordStream(nome, url) {
-    console.log('iniciando gravação')
 
-    this.readStream = child_process.spawn("ffmpeg",
+    this.readStream = child_process.spawn(pathToFfmpeg,
         ["-rtsp_transport", "tcp", "-i", url, '-f', 'mpeg1video', '-b:v', '800k', '-r', '30', '-'],
         { detached: false }
     );
@@ -18,7 +20,7 @@ function recordStream(nome, url) {
     });
 
     // var filename = `${nome}_${dataHora}.mp4`;
-    console.log(`Arquivo: ${nome}`)
+    console.log(`Gravando. Arquivo: ${nome}`)
     var writeStream = fs.createWriteStream(nome);
     this.readStream.stdout.pipe(writeStream);
 
