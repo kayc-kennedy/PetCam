@@ -92,6 +92,7 @@ module.exports = {
             return error;
         }
     },
+
     blockAcessClient: async (id_petshop, id_animal, status) => { // REVISAR 
         try {
 
@@ -103,6 +104,7 @@ module.exports = {
 
             // O acesso camera será unico sempre, então pode-se usar a primeira posicao achada
             let id_acesso_camera = dataRecordign[0].id_acesso_camera
+            
 
             if(dataRecordign[0]){
                 // Mudo o status do Acesso as cameras ao vivo
@@ -114,6 +116,7 @@ module.exports = {
                 // Encerro as gravações de todas as cameras
                 let kill_process;
                 for(let i = 0; i < dataRecordign.length; i++){
+                    console.log(dataRecordign[i].id_processo);
                     kill_process = process.kill(dataRecordign[i].id_processo);
                 }
 
@@ -122,6 +125,8 @@ module.exports = {
                 db('gravacao')
                     .where({'gravacao.id_acesso_camera':id_acesso_camera})
                     .update({data_hora_fim: new Date() });
+                
+                console.log(response_gravacao)
                 
                 // Subo os videos para AWS
                 for(let i = 0; i < dataRecordign.length; i++){
@@ -140,7 +145,7 @@ module.exports = {
                                         if (err) console.log(err);
                                         console.log(`Arquivo ${filename} deletado`);
                                     })  
-                                })
+                                    })
                         })
                         .catch((err)=>{
                             console.log(err)

@@ -13,7 +13,4 @@ router.post('/grant-acess/:id_petshop/:id_animal/:id_cliente', [validateToken, v
 router.put('/block-acess/:id_petshop/:id_animal/', [validateToken, validatePermission], CameraController.blockAcessClient);
 router.put('/change-status/', [validateToken, validatePermission], CameraController.changeStatusCamera);
 
-
-
-
 module.exports = router;

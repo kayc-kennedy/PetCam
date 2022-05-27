@@ -8,9 +8,7 @@ const camera = require('./routes/camera')
 
 const geraToken = require('../src/utils/geraToken')
 
-
 app.use(express.json());
-
 
 // ROTAS 
 app.get('/', (req, res) => {

@@ -5,28 +5,26 @@ var
 
 var pathToFfmpeg = require('ffmpeg-static');
 
-
-// var url = "rtsp://admin:CYZS2V92@cameratcc.ddns.net:554/cam/realmonitor?channel=1&subtype=0";
-
 function recordStream(nome, url) {
-
+    console.log(url)
     this.readStream = child_process.spawn(pathToFfmpeg,
         ["-rtsp_transport", "tcp", "-i", url, '-f', 'mpeg1video', '-b:v', '800k', '-r', '30', '-'],
         { detached: false }
     );
+    var writeStream = fs.createWriteStream(nome);
 
     this.readStream.stdout.on('data', function(data) {
         // momento de gravação
+        if(!data){
+            writeStream.end()
+            return false
+        } 
     });
 
-    // var filename = `${nome}_${dataHora}.mp4`;
     console.log(`Gravando. Arquivo: ${nome}`)
-    var writeStream = fs.createWriteStream(nome);
     this.readStream.stdout.pipe(writeStream);
 
     return this.readStream.pid
 };
-
-
 
 module.exports = { recordStream }
