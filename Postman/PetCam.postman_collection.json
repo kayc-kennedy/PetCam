@@ -9,11 +9,21 @@
 		{
 			"name": "Cadastrar Usuario",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoiMSIsImlhdCI6MTY1MzA2MDM3OCwiZXhwIjoxNjUzMjQwMzc4fQ.Xxpf9kgyCvTX1twDB3lns1sJb6GTqTufwJge18Uv04Q",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\":\"kayc.kennedy\",\r\n    \"password\":\"123\",\r\n    \"nome_usuario\":\"kayc_kennedy\",\r\n    \"data_criacao\":\"01/01/2001\",\r\n    \"tipo_usuario\":\"C\"\r\n}",
+					"raw": "{\r\n    \"email\":\"petshop@gmail.com\",\r\n    \"password\":\"123\",\r\n    \"nome_usuario\":\"petshop_01\",\r\n    \"nome\":\"petshop\",\r\n    \"data_criacao\":\"01/01/2001\",\r\n    \"tipo_usuario\":\"P\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -42,7 +52,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nome_usuario\":\"kayc\",\r\n    \"password\":123\r\n\r\n}",
+					"raw": "{\r\n    \"nome_usuario\":\"gui@gmaill\",\r\n    \"password\":\"dfsfgdsfhgbfsdaghdfgadf\",\r\n    \"tipo_usuario\":\"C\"\r\n\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -72,7 +82,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJpYXQiOjE2NTI3NDE5MjEsImV4cCI6MTY1Mjc0NTUyMX0.W2SVkLcqkdzeJhPw9WuflTJdn7pzWR3WZeXl0EPS9OQ",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoyLCJpYXQiOjE2NTMwNjg2MzYsImV4cCI6MTY1MzA3MjIzNn0.GimaFJ9spdrYePX9t-HGi-mMA9dZjSOsun4vjEpZr7Y",
 							"type": "string"
 						}
 					]
@@ -81,7 +91,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id_cliente\":\"9\", \r\n    \"nome\":\"Pet\",\r\n    \"raca\":\"um sdsadaddog\", \r\n    \"cor\":\"negao22\", \r\n    \"data_nascimento\":\"2022-05-15\", \r\n    \"sexo\":\"M\"\r\n}",
+					"raw": "{\r\n    \"id_cliente\":\"2\", \r\n    \"nome\":\"Pet_01\",\r\n    \"raca\":\"dog mal\", \r\n    \"cor\":\"preto\", \r\n    \"data_nascimento\":\"2022-05-15\", \r\n    \"sexo\":\"M\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -179,7 +189,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJpYXQiOjE2NTI3NDQ0MDQsImV4cCI6MTY1Mjc0ODAwNH0.NfeH39pEr68d1ovGRs_dkYw1wMEoBRNXGY9XSktIXwg",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoiMSIsImlhdCI6MTY1MzYxMDMyMywiZXhwIjoxNjUzNzkwMzIzfQ.h08sBOma1r54I-De1LCRk11YlKK0s4WiNozCq0acc4k",
 							"type": "string"
 						}
 					]
@@ -187,7 +197,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/camera/listall/2",
+					"raw": "http://localhost:3000/camera/list/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -195,8 +205,8 @@
 					"port": "3000",
 					"path": [
 						"camera",
-						"listall",
-						"2"
+						"list",
+						"1"
 					]
 				}
 			},
@@ -210,7 +220,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJpYXQiOjE2NTI4NDEwOTksImV4cCI6MTY1Mjg0NDY5OX0.0kMUeuQFpKQlaSQCu5uF2g8nSGmR8YleXC7BYb-nig4",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoiMSIsImlhdCI6MTY1MzU4NjI0MiwiZXhwIjoxNjUzNzY2MjQyfQ.p3I4exwwEkDVDL-bhXJsfYJyztCCcFBc6CmXxVDcj2Q",
 							"type": "string"
 						}
 					]
@@ -218,7 +228,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/camera/grant-acess/1/9996/1",
+					"raw": "http://localhost:3000/camera/grant-acess/2/1/2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -227,9 +237,9 @@
 					"path": [
 						"camera",
 						"grant-acess",
+						"2",
 						"1",
-						"9996",
-						"1"
+						"2"
 					]
 				}
 			},
@@ -238,10 +248,20 @@
 		{
 			"name": "Bloquear Imagens de Clientes",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoiMSIsImlhdCI6MTY1MzU4NjI0MiwiZXhwIjoxNjUzNzY2MjQyfQ.p3I4exwwEkDVDL-bhXJsfYJyztCCcFBc6CmXxVDcj2Q",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/camera/block-acess/1/9996",
+					"raw": "http://localhost:3000/camera/block-acess/2/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -250,8 +270,8 @@
 					"path": [
 						"camera",
 						"block-acess",
-						"1",
-						"9996"
+						"2",
+						"1"
 					]
 				}
 			},
@@ -301,7 +321,19 @@
 			"name": "Gera token",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/geratoken/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"geratoken",
+						"1"
+					]
+				}
 			},
 			"response": []
 		},
@@ -322,7 +354,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nome\":\"Kayc\",\r\n    \"email\":\"kayc.teste\",\r\n    \"password\":\"dfsfgdsfhgbfsdaghdfgadf\",\r\n    \"id_cliente\":1\r\n}",
+					"raw": "{\r\n    \"nome\":\"\",\r\n    \"email\":\"\",\r\n    \"password\":\"\",\r\n    \"id_cliente\":1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
