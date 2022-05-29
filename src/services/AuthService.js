@@ -76,8 +76,25 @@ module.exports = {
         } catch (error) {
             return { "message": "Erro ao realizar cadastro", "status_code": 422 }
         }
+    },
+    getUserByNameUser: async (data) => {
+        const { nome_usuario, tipo_usuario = 'C'  } = data
+
+        try {
+            if(nome_usuario && nome_usuario != '' && nome_usuario != undefined) {
+                response = await UsersRepository.getUserByNameUser(nome_usuario, tipo_usuario);
+ 
+                if(response) return { response, "status_code": 200 }
+
+                return { "message":"Usuário não encontrado", "status_code":404 }
+            }
+            return { "message":"Informe um usuário válido", "status_code":400 }
+
+        } catch (error) {
+            console.log(error)
+            return { "message": "Erro ao buscar usuário", "status_code": 422 }
+        }
     }
-    
 }
 
 function createJWT(id_usuario) {
