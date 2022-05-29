@@ -67,7 +67,7 @@ module.exports = {
 
             for (let i = 0; i < lengthJsonRecording; i++){
                 const dataHora = data.dataHora();
-                const nome_arquivo = `${repository}${jsonRecording[i].id_camera}_${id_animal}_${id_petshop}.mp4`;
+                const nome_arquivo = `${repository}old_${jsonRecording[i].id_camera}_${id_animal}_${id_petshop}.mp4`;
 
                 let pid = recording.recordStream(nome_arquivo, jsonRecording[i].url ) 
                 jsonRecording[i].id_processo = pid
@@ -130,22 +130,27 @@ module.exports = {
                 
                 // Subo os videos para AWS
                 for(let i = 0; i < dataRecordign.length; i++){
-                    const filename = './videos/' + dataRecordign[i].nome_arquivo 
+                    const filename =  dataRecordign[i].nome_arquivo
+                    const path = './videos/' 
                     // Converto os videos gravados para mp4 
-                    const fileConvert = convert.convertVideo(filename)
+                    const fileConvert = convert.convertVideo(path, filename)
 
                     fileConvert
                         .then((data)=>{
                             // Envio para a AWS
                             aws.uploadAWS(dataRecordign[i].nome_arquivo)
                                 .then(()=>{
-                                    console.log(`Arquivo ${filename} enviado para a AWS`)
+                                    console.log(`Arquivo ${path}${filename} enviado para a AWS`)
                                     // Apago os videos após o envio 
-                                    fs.unlink(filename, (err)=>{
-                                        if (err) console.log(err);
-                                        console.log(`Arquivo ${filename} deletado`);
+                                    fs.unlink(`${path}${filename}`, (err)=>{
+                                        if (err)  console.log(err);
+                                        console.log(`Arquivo ${path}${filename} deletado`);
+                                    }) 
+                                    fs.unlink(`${path}old_${filename}`, (err)=>{
+                                        if (err)  console.log(err);
+                                        console.log(`Arquivo ${path}old_${filename} deletado`);
                                     })  
-                                    })
+                                })
                         })
                         .catch((err)=>{
                             console.log(err)
