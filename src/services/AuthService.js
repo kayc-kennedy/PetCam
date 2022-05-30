@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UsersRepository = require('../repositories/UsersRepository');
+const { response } = require('express');
 require('dotenv').config()
 
 module.exports = {
@@ -77,14 +78,14 @@ module.exports = {
             return { "message": "Erro ao realizar cadastro", "status_code": 422 }
         }
     },
-    getUserByNameUser: async (data) => {
+    getIdUserByNameUser: async (data) => {
         const { nome_usuario, tipo_usuario = 'C'  } = data
 
         try {
             if(nome_usuario && nome_usuario != '' && nome_usuario != undefined) {
-                response = await UsersRepository.getUserByNameUser(nome_usuario, tipo_usuario);
- 
-                if(response) return { response, "status_code": 200 }
+                const response = await UsersRepository.getIdUserByNameUser(nome_usuario, tipo_usuario);
+
+                if(response) return { "id":response.id_cliente, "nome":response.nome, "email":response.email, "status_code": 200 }
 
                 return { "message":"Usuário não encontrado", "status_code":404 }
             }

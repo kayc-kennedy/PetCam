@@ -22,6 +22,26 @@ module.exports = {
             return error;
         }
     },
+    getIdUserByNameUser: async (nome_usuario, tipo_usuario) => {
+        try {
+            if(tipo_usuario == 'C'){    
+                const response = await db('usuario')
+                    .join('cliente', 'usuario.id_usuario', '=', "cliente.id_usuario")
+                    .select('cliente.id_cliente', 'cliente.nome', 'cliente.email')
+                    .where({'usuario.nome_usuario': nome_usuario, 'usuario.tipo_usuario': tipo_usuario, 'cliente.status': 'A'})
+                return response[0]
+            }
+            const response = await db('usuario')
+                .join('petshop', 'usuario.id_usuario', '=', "petshop.id_usuario")
+                .select('petshop.id_petshop', 'petshop.nome', 'petshop.status', 'usuario.senha', 'usuario.tipo_usuario')
+                .where({'usuario.nome_usuario': nome_usuario, 'usuario.tipo_usuario': tipo_usuario, 'petshop.status': 'A'})
+
+            return response[0]
+            
+        } catch (error) {
+            return error;
+        }
+    },
     updateProfile: async (id_cliente, user, client) => {
         try {
             var responseUser;
