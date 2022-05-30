@@ -12,7 +12,7 @@ module.exports = {
     },
     getClients: async () => {
         try {
-            const response = await db.select().table('cliente')
+            const response = await db.select().table('cliente').where("cliente.status", '=', 'A')
             return response;
 
         } catch (error) { 
