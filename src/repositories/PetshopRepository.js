@@ -10,6 +10,21 @@ module.exports = {
             return error;
         }
     },
+    getListAcess: async (id_petshop) => {
+        try {
+            const response = await db('acesso_camera')
+            .join('animal', 'animal.id_animal', '=', 'acesso_camera.id_animal')
+            .join('cliente', 'cliente.id_cliente', '=', 'animal.id_cliente')
+            .select('animal.id_cliente', 'acesso_camera.id_animal', 'cliente.nome as nome_cliente', 'animal.nome as nome_animal')
+            .where({'acesso_camera.status':'A', 'acesso_camera.id_petshop':id_petshop})
+
+            return response;
+
+        } catch (error) { 
+            return error;
+        }
+    },
+    
     getClients: async () => {
         try {
             const response = await db.select().table('cliente').where("cliente.status", '=', 'A')

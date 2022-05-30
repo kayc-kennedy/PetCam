@@ -8,6 +8,7 @@ const {validatePermission} = require('../middleware/validatePermission')
 router.post('/pet', [validateToken, validatePermission], PetshopController.insertPets);
 router.get('/clients', [validateToken, validatePermission], PetshopController.getClients);
 router.get('/pets/:idcliente', [validateToken, validatePermission], PetshopController.getPets);
+router.get('/list_acess/:id_petshop', [validateToken, validatePermission], PetshopController.getListAcess);
 
 
 

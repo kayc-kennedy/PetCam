@@ -16,3 +16,8 @@ exports.getPets = async (req, res) => {
         return res.status(service.status_code).json(service.response);
 }
 
+exports.getListAcess = async (req, res) => {
+    const service = await PetshopService.getListAcess(req.params)
+        return res.status(service.status_code).json(service.response);
+}
+

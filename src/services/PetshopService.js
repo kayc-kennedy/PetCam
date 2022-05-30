@@ -18,6 +18,20 @@ module.exports = {
         }
     },
 
+    getListAcess: async (data) => {
+        const { id_petshop } = data
+        try {
+            const response = await PetshopRepository.getListAcess(id_petshop);
+
+            if(response[0]) return { response, "status_code": 200 }          
+            return { response, "status_code": 404 }
+            
+        } catch (error) {
+            console.log(error)
+            return { "message": "Erro ao buscar acessos", "status_code": 422 }
+        }
+    },
+    
     getClients: async () => {
         try {
             const response = await PetshopRepository.getClients();
