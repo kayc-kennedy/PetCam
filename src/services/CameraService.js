@@ -16,6 +16,25 @@ module.exports = {
         }
     },
 
+    insertCamera: async (data) => {
+        try {
+            const { id_petshop, link_rtsp_gravado, link_rtsp_aovivo, setor, status = "A" } = data
+
+            if(!link_rtsp_aovivo || !link_rtsp_gravado ) return { "message": "Erro ao cadastrar camera, informe um link rtsp válido", "status_code": 400 }
+
+            const response = await CameraRepository.insertCamera({id_petshop, link_rtsp_gravado, link_rtsp_aovivo, setor, status});
+            
+            if(response[0]) return { "id_camera":response[0], "status_code": 201 }          
+            
+            return { response, "status_code": 400 }
+            
+        } catch (error) {
+            console.log(error)
+            return { "message": "Erro ao buscar as cameras", "status_code": 422 }
+        }
+    },
+    
+
     insertGrantAcess: async (data) => {
         try {
             const {id_animal, id_petshop, status='A'} = data

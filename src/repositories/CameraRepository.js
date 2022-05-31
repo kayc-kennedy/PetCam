@@ -1,5 +1,4 @@
 const db = require('../db');
-const data  = require('../utils/data');
 const recording = require('../rtsp/recording');
 const aws = require('../infra/aws') 
 const convert = require('../infra/promiseConvert') 
@@ -21,6 +20,18 @@ module.exports = {
             return error;
         }
     },
+
+    insertCamera: async (data) => {
+        try {
+
+            const response = await db('camera').insert(data)
+            return response
+
+        } catch (error) { 
+            return error;
+        }
+    },
+    
     alreadyAcess: async (id_animal) => {
         try {
             const alreadyAcess =  await db('acesso_camera')
@@ -49,11 +60,12 @@ module.exports = {
             await db('camera')
                 .select('camera.id_camera', 'camera.link_rtsp_gravado')
                 .where({'camera.status':"A", "camera.id_petshop":id_petshop})
-                
+            
+            
             let jsonRecording = []
             for (let i = 0; i < responseCameraList.length; i++) {
                 let id_camera = responseCameraList[i].id_camera
-                let url = responseCameraList[i].link_rtspme
+                let url = responseCameraList[i].link_rtsp_gravado
 
                 jsonRecording.push({id_animal: id_animal,
                                     id_acesso_camera: id_acesso_camera,
@@ -66,7 +78,6 @@ module.exports = {
             const repository  = './videos/'
 
             for (let i = 0; i < lengthJsonRecording; i++){
-                const dataHora = data.dataHora();
                 const nome_arquivo = `${repository}old_${jsonRecording[i].id_camera}_${id_animal}_${id_petshop}.mp4`;
 
                 let pid = recording.recordStream(nome_arquivo, jsonRecording[i].url ) 
@@ -119,7 +130,7 @@ module.exports = {
                     console.log(dataRecordign[i].id_processo);
                     kill_process = process.kill(dataRecordign[i].id_processo);
                 }
-
+                console.log(kill_process)
                 // Encerro as gravações no banco
                 const response_gravacao = await 
                 db('gravacao')

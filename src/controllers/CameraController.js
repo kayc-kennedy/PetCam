@@ -11,6 +11,11 @@ exports.insertGrantAcess = async (req, res) => {
         return res.status(service.status_code).json(service);
 }
 
+exports.insertCamera = async (req, res) => {
+    const service = await CameraService.insertCamera(req.body);
+        return res.status(service.status_code).json(service);
+}
+
 exports.blockAcessClient = async (req, res) => {
     const service = await CameraService.blockAcessClient(req.params);
         return res.status(service.status_code).json(service);
