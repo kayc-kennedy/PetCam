@@ -116,6 +116,8 @@ module.exports = {
             // O acesso camera será unico sempre, então pode-se usar a primeira posicao achada
             let id_acesso_camera = dataRecordign[0].id_acesso_camera
             
+            // Se a gravacao nao existir, encerro o fluxo
+            if(!id_acesso_camera) return id_acesso_camera = false
 
             if(dataRecordign[0]){
                 // Mudo o status do Acesso as cameras ao vivo

@@ -56,7 +56,6 @@ module.exports = {
                              "cameras_gravando": `${recording.responseRecording}`,
                              "cameras_ao_vivo":  `${recording.lengthJsonRecording}`,
                              "status_code": 201 }         
-                 
                 } 
             }
             
@@ -72,7 +71,9 @@ module.exports = {
         try {
             const {id_animal, id_petshop, status='I'} = data
             const response = await CameraRepository.blockAcessClient(id_petshop, id_animal, status);
-                       
+            
+            if(!response.id_acesso_camera) return { "message":"Acesso informado não existe.", "status_code": 404 }
+
             if(response){
                 
                 let acesso_removido = response.response_acesso_camera > 0 ? true:false
@@ -84,7 +85,7 @@ module.exports = {
                         "status_code": 200 }}
                 ;         
         
-            return { "menssage":"Erro ao cancelar acesso.", "status_code": 404 };
+            return { "message":"Erro ao cancelar acesso.", "status_code": 404 };
             
         } catch (error) {
             console.log(error)
@@ -99,7 +100,7 @@ module.exports = {
                        
             if(response) return { "message":"Câmera alterada com sucesso", "status_code": 200 };         
         
-            return { "menssage":"Camerâ não encontrada", "status_code": 404 };
+            return { "menssage":"Câmera não encontrada", "status_code": 404 };
             
         } catch (error) {
             console.log(error)
