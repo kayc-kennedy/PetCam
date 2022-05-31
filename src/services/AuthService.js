@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UsersRepository = require('../repositories/UsersRepository');
-const { response } = require('express');
 require('dotenv').config()
 
 module.exports = {
@@ -34,14 +33,20 @@ module.exports = {
     },
 
     registerUser: async (data) => {
-        const { password, nome_usuario, tipo_usuario = 'C', nome, status = 'A', email  } = data
+        const { password, nome_usuario, tipo_usuario, nome, status = 'A', email, id_petshop  } = data
 
         try {
-            const response = await UsersRepository.registerUser({ senha: bcrypt.hashSync(password, 10), nome_usuario, tipo_usuario}, {nome, status, email});
-            console.log(response)
+            const response = await UsersRepository.registerUser({ senha: bcrypt.hashSync(password, 10), nome_usuario, tipo_usuario}, {nome, status, email, id_petshop});
+
+            // Caso dê erro eu apago o registro na tabela de usuário que foi criado, se tiver sido criado
+            if(!response.response_user && !response.response_client || !response.response_petshop && tipo_usuario !='C'){
+                const deleteUser = await UsersRepository.deleteUser(nome_usuario);
+                return { "message": "Erro ao inserir usuario", "status_code": 400 }
+            }
+
             if(response.errno == 1062) return { "message": "Usuário existente no sistema", "status_code": 422 }
             return { "message": "Usuário criado com sucesso", "token": createJWT(response.id_usuario), "status_code": 201 }
-
+            
         } catch (error) {
             return { "message": "Erro ao realizar cadastro", "status_code": 422 }
         }

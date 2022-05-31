@@ -94,23 +94,36 @@ module.exports = {
             return error;
         }
     },   
+    deleteUser: async(nome_usuario) => {
+        try{
+            const remove_user = await db('usuario')
+            .where({'nome_usuario':nome_usuario})
+            .del()
+
+            return remove_user
+        }catch (error) { 
+            return error;
+        }
+    },
       
     registerUser: async (user, data) => {
         try {
-            const response = await db('usuario').insert(user)
+            const response_user = await db('usuario').insert(user)
 
-            if(response[0] > 0 ){ // Verifico se o usuário foi criado
-                const id_usuario = response[0];
-                const dados_cadastrais = {id_usuario:id_usuario, nome:data.nome, email:data.email, status:data.status}
+            if(response_user[0] > 0 ){ // Verifico se o usuário foi criado
+                const id_usuario = response_user[0];
+                let dados_cadastrais = {id_usuario:id_usuario, nome:data.nome, email:data.email, status:data.status, id_petshop:data.id_petshop}
 
                 if(user.tipo_usuario == "C"){ // Cadastrar cliente
                     const response_client = await db('cliente').insert(dados_cadastrais)
-                    return response_client
+
+                    return ({response_user, response_client})
                 }
 
                 // Cadastrar Petshop
+                delete dados_cadastrais.id_petshop;
                 const response_petshop = await db('petshop').insert(dados_cadastrais)
-                return response_petshop
+                return ({response_user, response_petshop})
             }
 
         } catch (error) { 

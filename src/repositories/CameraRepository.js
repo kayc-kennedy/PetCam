@@ -47,7 +47,7 @@ module.exports = {
         try {
             const responseCameraList = 
             await db('camera')
-                .select('camera.id_camera', 'camera.link_rtspme')
+                .select('camera.id_camera', 'camera.link_rtsp_gravado')
                 .where({'camera.status':"A", "camera.id_petshop":id_petshop})
                 
             let jsonRecording = []
@@ -182,7 +182,7 @@ module.exports = {
     },
     getCamerasAvailable: async (id_cliente) => {
         try {
-            const listCamera = await db.raw(`select c.id_camera, c.ddns, c.porta, c.usuario, c.senha, c.link_rtspme, c.setor from petcam.acesso_camera ac 	inner join petcam.petshop pt on ac.id_petshop = pt.id_petshop     inner join petcam.camera c on pt.id_petshop  = c.id_petshop     inner join petcam.animal a on a.id_animal = ac.id_animal     where a.id_cliente =   ${id_cliente}      and c.status = ac.status    		and ac.status = 'a' group by c.id_camera, c.ddns, c.porta, c.usuario, c.senha, c.link_rtspme, c.setor`);
+            const listCamera = await db.raw(`select c.id_camera, c.link_rtsp_aovivo, c.setor from petcam.acesso_camera ac inner join petcam.petshop pt on ac.id_petshop = pt.id_petshop inner join petcam.camera c on pt.id_petshop  = c.id_petshop inner join petcam.animal a on a.id_animal = ac.id_animal  where a.id_cliente = ${id_cliente} and c.status = ac.status and ac.status = 'A' group by c.id_camera, c.link_rtsp_aovivo, c.setor`);
             
             return listCamera[0];
 

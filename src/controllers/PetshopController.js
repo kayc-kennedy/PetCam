@@ -7,8 +7,8 @@ exports.insertPets = async (req, res) => {
 }
 
 exports.getClients = async (req, res) => {
-    const service = await PetshopService.getClients()
-        return res.status(service.status_code).json(service.response);
+    const service = await PetshopService.getClients(req.params)
+        return res.status(service.status_code).json(service.ClientsAndPets);
 }
 
 exports.getPets = async (req, res) => {

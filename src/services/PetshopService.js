@@ -32,12 +32,58 @@ module.exports = {
         }
     },
     
-    getClients: async () => {
+    getClients: async (data) => {
         try {
-            const response = await PetshopRepository.getClients();
+            const { id_petshop } = data
+            let ClientsAndPets = []
+            // Busco os clientes
+            const response_clients = await PetshopRepository.getClients(id_petshop);
+            
+            // console.log(response_clients)
+            let animais = []
 
-            if(response[0]) return { response, "status_code": 200 }          
-            return { response, "status_code": 404 }
+            if(response_clients){
+                let count = 0;
+                for await(let i of response_clients){
+
+                    let id_cliente = i.id_cliente;
+                    const response_pets = await PetshopRepository.getPets(id_cliente)
+                    
+                    console.log(response_pets)
+                    console.log("cliente")
+                    // console.log(response_pets[count])
+
+                    // console.log("coontador: "  + count)
+                    // for await(let x of response_pets){
+                    //     console.log(x)
+                    //     console.log("animal")
+                    //     animais.push({id_animal:response_pets[0].id_animal,
+                    //         nome_pet:response_pets[count].nome
+                    //       })
+                    // }
+
+                    // console.log(animais)
+
+                    // console.log(response_pets.indexOf( x => x.id_cliente == i.id_cliente) +1)
+
+                    // animais.push(response_pets.indexOf(i, 0))
+                    // count++
+                    // console.log(count)
+
+                   
+                    ClientsAndPets.push({
+                        "id_cliente": i.id_cliente,
+                        "nome": i.nome,
+                        "email": i.email,
+                        "status": i.status,
+                        "animais": animais
+                    })
+                    // console.log(ClientsAndPets)
+                }
+            }
+
+            if(ClientsAndPets[0]) return { ClientsAndPets, "status_code": 200 }          
+            return { response_clients, "status_code": 404 }
             
         } catch (error) {
             console.log(error)
@@ -46,9 +92,9 @@ module.exports = {
     },
     getPets: async (idCliente) => {
         try {
-            const response = await PetshopRepository.getPets(idCliente);
-            
-            if(response[0]) return { response, "status_code": 200 }          
+                const response = await PetshopRepository.getPets(idCliente);
+                
+                if(response[0]) return { response, "status_code": 200 }          
             return { response, "status_code": 404 }
 
         } catch (error) {
