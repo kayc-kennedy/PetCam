@@ -59,11 +59,13 @@ module.exports = {
             
             
             // Persiste as informações do cliente, para que não seja possivel atualizar para null no banco
-            if(!nome || !email){
+            if(!nome){
                 nome = dataClient[0].nome
-                email = dataClient[0].email
-
             }
+            if(!email){
+                email = dataClient[0].email
+            }
+            
             // Se existir senha, atualizo
             if(user.senha){
                 responseUser = await 

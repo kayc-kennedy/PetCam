@@ -52,8 +52,10 @@ module.exports = {
             const response = await CameraRepository.blockAcessClient(id_petshop, id_animal, status);
                        
             if(response){
+                
                 let acesso_removido = response.response_acesso_camera > 0 ? true:false
                 let gravacoes_interrompidas = response.response_gravacao > 0 && response.kill_process ? true:false;
+
                 return { "message":"Acesso removido com sucesso", 
                          "acesso_removido": acesso_removido,
                          "gravacoes_interrompidas": gravacoes_interrompidas,
