@@ -19,8 +19,11 @@ module.exports = {
     insertGrantAcess: async (data) => {
         try {
             const {id_animal, id_petshop, status='A'} = data
-            const alreadyAcess = await CameraRepository.alreadyAcess(id_animal);
 
+            const existeCamera = await CameraRepository.getAllCameras(id_petshop);
+            if(!existeCamera[0]) return { "menssage":"Erro ao liberar acesso. O Petshop não possui cameras cadastradas", "status_code": 404 }
+ 
+            const alreadyAcess = await CameraRepository.alreadyAcess(id_animal);
             if(alreadyAcess[0]) return { "message":"O pet informado já possui um atendimento ativo, ou seja o dono já possue acesso as cameras", "status_code": 201 }    
 
             const response = await CameraRepository.insertGrantAcess({id_petshop, id_animal, status});            
