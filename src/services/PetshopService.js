@@ -36,49 +36,23 @@ module.exports = {
         try {
             const { id_petshop } = data
             let ClientsAndPets = []
+
             // Busco os clientes
             const response_clients = await PetshopRepository.getClients(id_petshop);
             
-            // console.log(response_clients)
-            let animais = []
-
             if(response_clients){
-                let count = 0;
                 for await(let i of response_clients){
 
                     let id_cliente = i.id_cliente;
                     const response_pets = await PetshopRepository.getPets(id_cliente)
-                    
-                    console.log(response_pets)
-                    console.log("cliente")
-                    // console.log(response_pets[count])
-
-                    // console.log("coontador: "  + count)
-                    // for await(let x of response_pets){
-                    //     console.log(x)
-                    //     console.log("animal")
-                    //     animais.push({id_animal:response_pets[0].id_animal,
-                    //         nome_pet:response_pets[count].nome
-                    //       })
-                    // }
-
-                    // console.log(animais)
-
-                    // console.log(response_pets.indexOf( x => x.id_cliente == i.id_cliente) +1)
-
-                    // animais.push(response_pets.indexOf(i, 0))
-                    // count++
-                    // console.log(count)
-
                    
                     ClientsAndPets.push({
                         "id_cliente": i.id_cliente,
                         "nome": i.nome,
                         "email": i.email,
                         "status": i.status,
-                        "animais": animais
+                        "animais": response_pets
                     })
-                    // console.log(ClientsAndPets)
                 }
             }
 
@@ -90,6 +64,7 @@ module.exports = {
             return { "message": "Erro ao buscar os clientes", "status_code": 422 }
         }
     },
+    
     getPets: async (idCliente) => {
         try {
                 const response = await PetshopRepository.getPets(idCliente);
