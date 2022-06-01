@@ -129,18 +129,14 @@ module.exports = {
                 // Encerro as gravações de todas as cameras
                 let kill_process;
                 for(let i = 0; i < dataRecordign.length; i++){
-                    console.log(dataRecordign[i].id_processo);
                     kill_process = process.kill(dataRecordign[i].id_processo);
                 }
-                console.log(kill_process)
                 // Encerro as gravações no banco
                 const response_gravacao = await 
                 db('gravacao')
                     .where({'gravacao.id_acesso_camera':id_acesso_camera})
                     .update({data_hora_fim: new Date() });
-                
-                console.log(response_gravacao)
-                
+                                
                 // Subo os videos para AWS
                 for(let i = 0; i < dataRecordign.length; i++){
                     const filename =  dataRecordign[i].nome_arquivo
@@ -170,7 +166,7 @@ module.exports = {
                         })     
                 }
 
-                return {response_acesso_camera, response_gravacao, kill_process}
+                return {response_acesso_camera, response_gravacao, kill_process, id_acesso_camera}
             }
             return false
 

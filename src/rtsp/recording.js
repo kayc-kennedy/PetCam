@@ -6,7 +6,6 @@ var
 var pathToFfmpeg = require('ffmpeg-static');
 
 function recordStream(nome, url) {
-    console.log(url + "é aqui ?")
     this.readStream = child_process.spawn(pathToFfmpeg,
         ["-rtsp_transport", "tcp", "-i", url, '-f', 'mpeg1video', '-b:v', '800k', '-r', '30', '-'],
         { detached: false }
