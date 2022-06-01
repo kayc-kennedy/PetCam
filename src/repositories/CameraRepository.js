@@ -106,7 +106,6 @@ module.exports = {
 
     blockAcessClient: async (id_petshop, id_animal, status) => { // REVISAR 
         try {
-
             const dataRecordign = await 
                 db('gravacao')
                     .join('acesso_camera', 'gravacao.id_acesso_camera', '=', 'acesso_camera.id_acesso_camera')
@@ -115,7 +114,7 @@ module.exports = {
 
             // O acesso camera será unico sempre, então pode-se usar a primeira posicao achada
             let id_acesso_camera = dataRecordign[0].id_acesso_camera
-            
+            // console.log(id_acesso_camera)
             // Se a gravacao nao existir, encerro o fluxo
             if(!id_acesso_camera) return id_acesso_camera = false
 

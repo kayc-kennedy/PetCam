@@ -29,7 +29,6 @@ module.exports = {
         try {
 
             const response = await db('cliente')
-            .join('animal', 'cliente.id_cliente', '=', 'animal.id_cliente')
             .select('cliente.id_cliente', 'cliente.id_usuario', 'cliente.nome', 'cliente.email', 'cliente.status')
             .where({"cliente.status":'A', 'cliente.id_petshop':id_petshop})
             .groupBy('cliente.id_cliente', 'cliente.id_usuario', 'cliente.nome', 'cliente.email')
