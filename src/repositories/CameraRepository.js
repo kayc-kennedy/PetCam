@@ -12,7 +12,7 @@ module.exports = {
             db('camera')
                 .join('petshop', "petshop.id_petshop", '=', 'camera.id_petshop')
                 .select('camera.id_camera', 'camera.link_rtsp_aovivo', 'camera.setor', 'camera.status')
-                .where({'petshop.id_petshop':id_petshop});
+                .where({'petshop.id_petshop':id_petshop, 'camera.status':'A'});
 
             return response;
 
@@ -92,6 +92,7 @@ module.exports = {
                     delete jsonRecording[i].url;
                 }
                 responseRecording = await db('gravacao').insert(jsonRecording);
+                
                 responseRecording = true
             }
         

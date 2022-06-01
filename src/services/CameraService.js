@@ -39,14 +39,18 @@ module.exports = {
         try {
             const {id_animal, id_petshop, status='A'} = data
 
+            // Verifica se  petshop tem cameras validas
             const existeCamera = await CameraRepository.getAllCameras(id_petshop);
-            if(!existeCamera[0]) return { "message":"Erro ao liberar acesso. O Petshop não possui cameras cadastradas", "status_code": 406 }
- 
+            if(!existeCamera[0]) return { "message":"Erro ao liberar acesso. O Petshop não possui cameras cadastradas ou ativas", "status_code": 406 }
+            
+            //Verifica se o pet já não está em atendimento
             const alreadyAcess = await CameraRepository.alreadyAcess(id_animal);
             if(alreadyAcess[0]) return { "message":"O pet informado já possui um atendimento ativo, ou seja o dono já possue acesso as cameras", "status_code": 400 }    
 
+            // Insiro o acesso a camera
             const response = await CameraRepository.insertGrantAcess({id_petshop, id_animal, status});            
             
+            // Inicio a gravacao e salvo o registro no banco
             if(response[0]){
                 const id_acesso_camera = response[0]
                 const recording = await CameraRepository.insertRecording(id_animal, id_petshop, id_acesso_camera);
