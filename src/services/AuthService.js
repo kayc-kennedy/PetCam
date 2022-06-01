@@ -20,6 +20,7 @@ module.exports = {
                 return { "message": "Senha incorreta", "status_code": 403 }
             }
             return {  id: response.id_cliente || response.id_petshop, 
+                      id_petshop:response.id_petshop,
                       nome: response.nome, 
                       tipo_usuario: response.tipo_usuario,
                       "token": createJWT(response.id_cliente || response.id_petshop), 
