@@ -40,7 +40,7 @@ module.exports = {
             const {id_animal, id_petshop, status='A'} = data
 
             // Verifica se  petshop tem cameras validas
-            const existeCamera = await CameraRepository.getAllCameras(id_petshop);
+            const existeCamera = await CameraRepository.getAllCameras(id_petshop, filtra_status = true);
             if(!existeCamera[0]) return { "message":"Erro ao liberar acesso. O Petshop não possui cameras cadastradas ou ativas", "status_code": 406 }
             
             //Verifica se o pet já não está em atendimento

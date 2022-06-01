@@ -6,8 +6,16 @@ const fs = require('fs');
 
 
 module.exports = {  
-    getAllCameras: async (id_petshop) => {
+    getAllCameras: async (id_petshop, filtra_status) => {
         try {
+            if(filtra_status){
+                const response = await 
+                db('camera')
+                    .join('petshop', "petshop.id_petshop", '=', 'camera.id_petshop')
+                    .select('camera.id_camera', 'camera.link_rtsp_aovivo', 'camera.setor', 'camera.status')
+                    .where({'petshop.id_petshop':id_petshop, 'camera.status':'A'});
+                return response
+            }
             const response = await 
             db('camera')
                 .join('petshop', "petshop.id_petshop", '=', 'camera.id_petshop')
