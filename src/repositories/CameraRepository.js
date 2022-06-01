@@ -12,7 +12,7 @@ module.exports = {
             db('camera')
                 .join('petshop', "petshop.id_petshop", '=', 'camera.id_petshop')
                 .select('camera.id_camera', 'camera.link_rtsp_aovivo', 'camera.setor', 'camera.status')
-                .where({'petshop.id_petshop':id_petshop, 'camera.status':'A'});
+                .where({'petshop.id_petshop':id_petshop});
 
             return response;
 
