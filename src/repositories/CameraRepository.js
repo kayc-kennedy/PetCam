@@ -11,7 +11,7 @@ module.exports = {
             const response = await 
             db('camera')
                 .join('petshop', "petshop.id_petshop", '=', 'camera.id_petshop')
-                .select('camera.id_camera', 'camera.setor', 'camera.status')
+                .select('camera.id_camera', 'camera.link_rtsp_aovivo', 'camera.setor', 'camera.status')
                 .where({'petshop.id_petshop':id_petshop});
 
             return response;
