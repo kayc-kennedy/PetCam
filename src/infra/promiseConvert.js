@@ -1,27 +1,7 @@
-var child_process = require('child_process')
-var pathToFfmpeg = require('ffmpeg-static')
+const hbjs = require("handbrake-js");
 
-function convertVideo (path, filename) {
-    return new Promise((resolve, reject) => {
-        
-        var conversao = child_process.spawn(pathToFfmpeg,
-            ["-i", `${path}old_${filename}`, `${path}${filename}`],
-            { detached: false }
-        ); 
-
-        conversao.stderr.on('data', (data) => {
-            console.log(data)
-        })
-
-        conversao.on('close', function(code) {
-            console.log(code)
-            if(code) {
-                
-                reject(false)
-            }
-            resolve(true)
-        });
-    })
+async function convertVideo(path, filename){
+    await hbjs.run({input: `${path}old_${filename}`, output: `${path}${filename}`})
 }
 
 module.exports = { convertVideo }
