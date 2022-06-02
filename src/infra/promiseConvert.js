@@ -10,11 +10,13 @@ function convertVideo (path, filename) {
         ); 
 
         conversao.stderr.on('data', (data) => {
-            
+            console.log(data)
         })
 
         conversao.on('close', function(code) {
+            console.log(code)
             if(code) {
+                
                 reject(false)
             }
             resolve(true)
