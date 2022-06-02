@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "add-apt-repository ppa:stebbins/handbrake-releases ; apt-get update ; apt-get install handbrake-cli handbrake-gtk ; node src/index.js",
+    "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
