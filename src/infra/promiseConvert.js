@@ -1,21 +1,26 @@
+var child_process = require('child_process')
+var pathToFfmpeg = require('ffmpeg-static')
 
-var ffmpeg = require('fluent-ffmpeg')
-
-function convertVideo(path, filename){
-    return new Promise((resolve, reject)=> {
-        ffmpeg(`${path}old_${filename}`)
-        .format("matroska")
-        .save(`${path}${filename}`)
-        .on('end', () => {
-            resolve(true)
-        })
-        .on('error', (err) => {
-            console.error('Ffmpeg-static error: '+ err.message)
-            reject(err.message)
-        })
-
-    })
+function convertVideo (path, filename) {
+    return new Promise((resolve, reject) => {
         
+        var conversao = child_process.spawn(pathToFfmpeg,
+            ["-i", `${path}old_${filename}`, `${path}${filename}`],
+            { detached: false }
+        ); 
+
+        conversao.stderr.on('data', (data) => {
+        })
+
+        conversao.on('close', function(code) {
+            console.log(code)
+            if(code) {
+                
+                reject(false)
+            }
+            resolve(true)
+        });
+    })
 }
 
 module.exports = { convertVideo }
