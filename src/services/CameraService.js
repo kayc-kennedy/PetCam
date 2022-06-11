@@ -16,6 +16,20 @@ module.exports = {
         }
     },
 
+    getRecording: async (data) => {
+        try {
+            const {id_animal, id_camera} = data
+            const response = await CameraRepository.getRecording(id_animal, id_camera);
+            
+            if(response[0]) return { response, "status_code": 200 }          
+            return { response, "status_code": 404 }
+            
+        } catch (error) {
+            console.log(error)
+            return { "message": "Erro ao buscar as cameras", "status_code": 422 }
+        }
+    },
+    
     insertCamera: async (data) => {
         try {
             const { id_petshop, link_rtsp_gravado, link_rtsp_aovivo, setor, status = "A" } = data

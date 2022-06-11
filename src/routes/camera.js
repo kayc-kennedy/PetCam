@@ -7,7 +7,7 @@ const {validatePermission} = require('../middleware/validatePermission')
 // CAMERA
 router.get('/listall/:id_petshop', [validateToken, validatePermission], CameraController.getAllCameras);
 router.get('/list/:id_cliente', [validateToken], CameraController.getCamerasAvailable);
-
+router.get('/list/:id_camera/:id_animal/', [validateToken], CameraController.getRecording);
 
 router.post('/grant-acess/:id_petshop/:id_animal/', [validateToken, validatePermission], CameraController.insertGrantAcess);
 router.post('/insert-camera/', [validateToken, validatePermission], CameraController.insertCamera);
