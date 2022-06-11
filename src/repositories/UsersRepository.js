@@ -6,14 +6,14 @@ module.exports = {
             if(tipo_usuario == 'C'){    
                 const response = await db('usuario')
                     .join('cliente', 'usuario.id_usuario', '=', "cliente.id_usuario")
-                    .select('cliente.id_cliente', 'cliente.nome', 'cliente.status', 'usuario.senha', 'usuario.tipo_usuario','cliente.id_petshop')
+                    .select('cliente.id_cliente', 'cliente.nome', 'cliente.status', 'usuario.nome_usuario', 'usuario.senha',  'usuario.tipo_usuario','cliente.id_petshop')
                     .where({'usuario.nome_usuario': nome_usuario, 'usuario.tipo_usuario': tipo_usuario, 'cliente.status': 'A'})
                     
                 return response[0]
             }
             const response = await db('usuario')
                 .join('petshop', 'usuario.id_usuario', '=', "petshop.id_usuario")
-                .select('petshop.id_petshop', 'petshop.nome', 'petshop.status', 'usuario.senha', 'usuario.tipo_usuario')
+                .select('petshop.id_petshop','petshop.nome', 'petshop.status', 'usuario.nome_usuario',  'usuario.senha', 'usuario.tipo_usuario')
                 .where({'usuario.nome_usuario': nome_usuario, 'usuario.tipo_usuario': tipo_usuario, 'petshop.status': 'A'})
 
             return response[0]
@@ -22,19 +22,25 @@ module.exports = {
             return error;
         }
     },
-    getIdUserByNameUser: async (nome_usuario, tipo_usuario) => {
+    getIdUserByNameUser: async (nome_usuario) => {
         try {
-            if(tipo_usuario == 'C'){    
+
+            const usuario = await db('usuario')
+            .select('usuario.tipo_usuario')
+            .where({'usuario.nome_usuario': nome_usuario,})
+
+
+            if(usuario[0].tipo_usuario == 'C'){ 
                 const response = await db('usuario')
                     .join('cliente', 'usuario.id_usuario', '=', "cliente.id_usuario")
-                    .select('cliente.id_cliente', 'cliente.nome', 'cliente.email')
-                    .where({'usuario.nome_usuario': nome_usuario, 'usuario.tipo_usuario': tipo_usuario, 'cliente.status': 'A'})
+                    .select('cliente.id_cliente', 'cliente.nome', 'cliente.email', 'usuario.nome_usuario')
+                    .where({'usuario.nome_usuario': nome_usuario, 'cliente.status': 'A'})
                 return response[0]
             }
             const response = await db('usuario')
                 .join('petshop', 'usuario.id_usuario', '=', "petshop.id_usuario")
-                .select('petshop.id_petshop', 'petshop.nome', 'petshop.status', 'usuario.senha', 'usuario.tipo_usuario')
-                .where({'usuario.nome_usuario': nome_usuario, 'usuario.tipo_usuario': tipo_usuario, 'petshop.status': 'A'})
+                .select('petshop.id_petshop', 'petshop.nome', 'petshop.email', 'petshop.status', 'usuario.senha', 'usuario.nome_usuario', 'usuario.tipo_usuario')
+                .where({'usuario.nome_usuario': nome_usuario, 'petshop.status': 'A'})
 
             return response[0]
             

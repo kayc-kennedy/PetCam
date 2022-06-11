@@ -22,6 +22,7 @@ module.exports = {
             return {  id: response.id_cliente || response.id_petshop, 
                       id_petshop:response.id_petshop,
                       nome: response.nome, 
+                      nome_usuario:response.nome_usuario, 
                       tipo_usuario: response.tipo_usuario,
                       "token": createJWT(response.id_cliente || response.id_petshop), 
                       "status_code": 200,
@@ -85,13 +86,13 @@ module.exports = {
         }
     },
     getIdUserByNameUser: async (data) => {
-        const { nome_usuario, tipo_usuario = 'C'  } = data
+        const { nome_usuario } = data
 
         try {
             if(nome_usuario && nome_usuario != '' && nome_usuario != undefined) {
-                const response = await UsersRepository.getIdUserByNameUser(nome_usuario, tipo_usuario);
-
-                if(response) return { "id":response.id_cliente, "nome":response.nome, "email":response.email, "status_code": 200 }
+                const response = await UsersRepository.getIdUserByNameUser(nome_usuario);
+                
+                if(response) return { "id":response.id_cliente || response.id_petshop, "nome":response.nome, "nome_usuario":response.nome_usuario, "email":response.email, "status_code": 200 }
 
                 return { "message":"Usuário não encontrado", "status_code":404 }
             }
