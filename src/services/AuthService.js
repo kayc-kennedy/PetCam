@@ -91,8 +91,8 @@ module.exports = {
         try {
             if(nome_usuario && nome_usuario != '' && nome_usuario != undefined) {
                 const response = await UsersRepository.getIdUserByNameUser(nome_usuario);
-                
-                if(response) return { "id":response.id_cliente || response.id_petshop, "nome":response.nome, "nome_usuario":response.nome_usuario, "email":response.email, "status_code": 200 }
+
+                if(response.nome_usuario) return { "id":response.id_cliente || response.id_petshop, "nome":response.nome, "nome_usuario":response.nome_usuario, "email":response.email, "status_code": 200 }
 
                 return { "message":"Usuário não encontrado", "status_code":404 }
             }
