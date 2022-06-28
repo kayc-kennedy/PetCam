@@ -34,13 +34,15 @@ module.exports = {
                 const response = await 
                 db.raw(`
                 select a.id_gravacao,  DATE_FORMAT(a.data_hora_fim, '%d/%m/%Y') data_gravacao from petcam.gravacao a
-                    where a.id_animal = ${id_animal}
-                    and a.id_camera = ${id_camera}
+                    where 1=1
                     and id_gravacao = (	
 						select max(id_gravacao)
 							from petcam.gravacao
 						where data_hora_fim is not null 
-                        and data_hora_inicio is not null )`)
+                            and data_hora_inicio is not null 
+                            and id_animal = ${id_animal}
+                            and id_camera = ${id_camera})`
+                    )
                 
                 return response[0]
         
